@@ -1,6 +1,9 @@
 {
   "name": "generic",
   "image": "ghcr.io/jay-withers/dev-containers/base:latest@sha256:d51b07d64c618dcdcfdd0959a19c12ebf5214eb3786e9dd34342daad6bd7b166",
+  "mounts": [
+    "source=${localEnv:HOME}/Git,target=/Users/jay/Git,type=bind"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
