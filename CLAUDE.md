@@ -43,7 +43,6 @@ Built around `.devcontainer/devcontainer.json` (image `ghcr.io/jay-withers/dev-c
 make install           # install pre-commit hooks (run once after cloning)
 make validate          # validate all Renovate presets with renovate-config-validator
 make lint              # run all pre-commit hooks against every file
-make protect-branch    # configure GitHub repo settings (auto-merge, branch protection) — override BRANCH/CHECKS to match this repo's checks
 ```
 
 ## Commit messages
@@ -61,17 +60,3 @@ Workflows are prefixed `ci-` (pull-request checks) or `cd-` (post-merge delivery
 - **ci-lint** (`.github/workflows/ci-lint.yml`): runs all linters on PRs to `main` via the reusable workflow `jay-withers/template-pipelines/.github/workflows/pre-commit.yml`. Its status-check context is `pre-commit / Pre-commit` (`<caller job id> / <reusable job name>`).
 - **ci-validate** (`.github/workflows/ci-validate.yml`): runs `renovate-config-validator --strict` over every root `*.json` preset on PRs to `main`. Its status-check context is `validate`.
 - **cd-tag** (`.github/workflows/cd-tag.yml`): auto-creates a semver tag and matching GitHub release on every merge to `main` from the Conventional Commits since the last release, via `jay-withers/template-pipelines/.github/workflows/release.yml` (default bump: patch).
-
-## GitHub repo settings
-
-`scripts/protect-branch.sh` (run via `make protect-branch`) sets the platform state that can't live in files: repo-level auto-merge (required for the automerge preset's `platformAutomerge`), delete-branch-on-merge, and a ruleset on the target branch requiring the given status checks plus approving reviews, with the Renovate GitHub App and the repo Admin role exempted as bypass actors. It clears existing rulesets first, so re-runs replace rather than accumulate.
-
-GitHub only honours ruleset bypass actors on **organisation-owned** repos — on a personal (user-owned) repo the Renovate app exemption is silently ignored, so a required-review rule blocks Renovate's auto-merge forever. The script detects this and defaults `APPROVALS_REQUIRED` to `0` for user-owned repos (`1` for orgs); override with `APPROVALS_REQUIRED=<n>` if you add other human collaborators and want review enforced (Renovate itself will then need an auto-approve app, e.g. `renovate-approve`, to ever merge). This is safe even for public repos: merging still requires write access, which forks/outside contributors don't have, so dropping the approval count doesn't grant any new capability.
-
-**This repo has two required checks**, so override the default `CHECKS` (which is just `pre-commit / Pre-commit`) to include `validate`:
-
-```bash
-make protect-branch CHECKS="$(printf 'pre-commit / Pre-commit\nvalidate')"
-```
-
-`CHECKS` is newline-separated because a context name can itself contain spaces (e.g. the reusable-workflow context above). Confirm exact context names with `gh pr checks`.
