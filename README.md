@@ -68,7 +68,6 @@ Extend the shared config, then override anything locally — later entries win:
 
 1. Open it in the dev container (VS Code: **Reopen in Container**, or GitHub Codespaces). The container runs `make install` on creation to wire up the pre-commit hooks.
 2. Outside a dev container, install the hooks manually with `make install`.
-3. Configure the GitHub-side settings that can't be templated as files (see below): `make protect-branch CHECKS="$(printf 'pre-commit / Pre-commit\nvalidate')"`.
 
 ## Commands
 
@@ -78,7 +77,6 @@ Run `make` (or `make help`) to list the available targets:
 make install           # install pre-commit hooks (run once after cloning)
 make validate          # validate all Renovate presets with renovate-config-validator
 make lint              # run all pre-commit hooks against every file
-make protect-branch    # configure GitHub repo settings (auto-merge, branch protection)
 ```
 
 Validate presets directly without make:
@@ -105,20 +103,6 @@ Workflows are prefixed `ci-` (pull-request checks) or `cd-` (post-merge delivery
 - **`.github/workflows/ci-validate.yml`** — validates every root `*.json` preset with `renovate-config-validator --strict`. Status check: `validate`.
 - **`.github/workflows/cd-tag.yml`** — on every merge to `main`, creates a semver tag and matching GitHub release from the Conventional Commits since the last release (default bump: patch), via `jay-withers/template-pipelines/.github/workflows/release.yml`.
 
-## Configuring GitHub
-
-Some settings can't be templated as files and need to be set once per repo via the GitHub API. With the [`gh` CLI](https://cli.github.com) authenticated as an admin on the repo:
-
-```bash
-make protect-branch CHECKS="$(printf 'pre-commit / Pre-commit\nvalidate')"
-```
-
-This runs `scripts/protect-branch.sh` and is idempotent. It enables repository **auto-merge** (which the automerge preset's `platformAutomerge` depends on) and **delete branch on merge**, then replaces all rulesets with one on the target branch requiring the given status checks and approving reviews, with the Renovate GitHub App and the repo **Admin** role exempted as bypass actors.
-
-GitHub only honours those bypass actors on **organisation-owned** repos, so on a personal (user-owned) repo the script defaults required reviews to `0` instead of `1` — otherwise Renovate's own auto-merge would be blocked forever waiting for a review it can't give itself. Override with `APPROVALS_REQUIRED=<n>` if needed; see `scripts/protect-branch.sh` for the full reasoning.
-
-`CHECKS` is a **newline-separated** list of status-check contexts (newline, not space, because a context name can itself contain spaces like `pre-commit / Pre-commit`). This repo has two checks — `pre-commit / Pre-commit` and `validate` — so pass both. Confirm exact names with `gh pr checks`.
-
 ## Structure
 
 ```text
@@ -143,8 +127,6 @@ renovate.json          # this repo dogfoods its own config
 .gitattributes         # git-level LF normalization
 .pre-commit-config.yaml
 commitlint.config.js   # commitlint (Conventional Commits) config
-scripts/
-  protect-branch.sh    # one-time GitHub settings (auto-merge, branch protection ruleset)
 CLAUDE.md              # guidance for Claude Code
 LICENSE
 Makefile
