@@ -1,6 +1,6 @@
 {
   "name": "generic",
-  "image": "ghcr.io/jay-withers/dev-containers/base:latest@sha256:d51b07d64c618dcdcfdd0959a19c12ebf5214eb3786e9dd34342daad6bd7b166",
+  "image": "ghcr.io/jay-withers/dev-containers/base:latest@sha256:86301ffc13cf262baa505e8c20dfa0125901021e20e4fd9766e0951a177645fa",
   "mounts": [
     "source=${localEnv:HOME}/Git,target=/Users/jay/Git,type=bind"
   ],
