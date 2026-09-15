@@ -49,6 +49,17 @@
     {
       "customType": "regex",
       "datasourceTemplate": "github-releases",
+      "depNameTemplate": "koalaman/shellcheck",
+      "managerFilePatterns": ["/^images/base/Dockerfile$/"],
+      "matchStrings": [
+        "ARG SHELLCHECK_URL=\"https://github\\.com/koalaman/shellcheck/releases/download/v(?<currentValue>[^/]+)/[^\"]+\""
+      ],
+      "packageNameTemplate": "koalaman/shellcheck",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "github-releases",
       "depNameTemplate": "cli/cli",
       "managerFilePatterns": ["/^images/base/Dockerfile$/"],
       "matchStrings": [
