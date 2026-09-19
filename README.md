@@ -25,7 +25,7 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 | **automerge** | `github>jay-withers/renovate:automerge` | Auto-merges every update — including majors — once CI passes. |
 | **schedule** | `github>jay-withers/renovate:schedule` | Opens PRs before 6am on Monday to reduce mid-week churn, and keeps open PRs rebased onto the base branch the rest of the week so branch protection's up-to-date requirement cannot strand them. |
 | **docker** | `github>jay-withers/renovate:docker` | Pins image digests and groups Docker updates. |
-| **github-actions** | `github>jay-withers/renovate:github-actions` | Pins Actions to commit SHAs and groups them. |
+| **github-actions** | `github>jay-withers/renovate:github-actions` | Pins Actions to commit SHAs, groups them, and holds runner labels at their current major — actionlint cannot validate a new runner label until it is released with one, so the bump would fail CI in every repo that pins a runner. |
 | **terraform** | `github>jay-withers/renovate:terraform` | Groups Terraform/Terragrunt providers and modules. |
 | **npm** | `github>jay-withers/renovate:npm` | Groups npm dev vs production dependencies and `@types`. |
 | **pre-commit** | `github>jay-withers/renovate:pre-commit` | Enables the pre-commit manager and groups all hook updates into one PR (they share `.pre-commit-config.yaml`). |
