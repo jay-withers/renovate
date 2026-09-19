@@ -1,9 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Batch updates for the weekend / early Monday to reduce mid-week churn and CI load.",
+  "description": [
+    "Batch new pull requests for the weekend / early Monday to reduce mid-week churn and CI load.",
+    "The schedule governs when Renovate opens pull requests, not whether it keeps open ones mergeable: updateNotScheduled is left at its default so branches that fall behind are rebased whenever Renovate runs. Set to false, it stranded every open pull request — branch protection requires an up-to-date branch, main moves during the week, and Renovate was not allowed to rebase until the next Monday window, by which point main had usually moved again. Backlogs 19 days deep, and platform automerge waiting on a requirement that could never be met.",
+    "rebaseWhen is stated rather than left to auto: auto's behaviour is documented as no longer guaranteed when platformAutomerge is enabled, which the automerge preset sets."
+  ],
   "schedule": ["before 6am on monday"],
   "lockFileMaintenance": {
     "schedule": ["before 6am on monday"]
   },
-  "updateNotScheduled": false
+  "updateNotScheduled": true,
+  "rebaseWhen": "behind-base-branch"
 }

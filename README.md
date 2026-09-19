@@ -23,7 +23,7 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 | --- | --- | --- |
 | **default** | `github>jay-withers/renovate` | The recommended everything-included config. Extends every ecosystem preset below plus `config:recommended`, dependency dashboard, semantic commits and sign-off, and enables the `pre-commit` manager. (Does not include **dev-container**, which is opt-in.) |
 | **automerge** | `github>jay-withers/renovate:automerge` | Auto-merges every update — including majors — once CI passes. |
-| **schedule** | `github>jay-withers/renovate:schedule` | Batches updates for before 6am on Monday to reduce mid-week churn. |
+| **schedule** | `github>jay-withers/renovate:schedule` | Opens PRs before 6am on Monday to reduce mid-week churn, and keeps open PRs rebased onto the base branch the rest of the week so branch protection's up-to-date requirement cannot strand them. |
 | **docker** | `github>jay-withers/renovate:docker` | Pins image digests and groups Docker updates. |
 | **github-actions** | `github>jay-withers/renovate:github-actions` | Pins Actions to commit SHAs and groups them. |
 | **terraform** | `github>jay-withers/renovate:terraform` | Groups Terraform/Terragrunt providers and modules. |
