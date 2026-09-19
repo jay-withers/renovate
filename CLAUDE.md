@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo does
 
-A centralised [Renovate](https://docs.renovatebot.com/) configuration repo. Instead of every repository carrying its own full `renovate.json`, each repo extends the shared presets defined here (`extends: ["github>jay-withers/template-renovate"]`). Policy — schedule, auto-merge rules, ecosystem grouping — is changed once here and inherited everywhere. The repo also carries the language-agnostic scaffolding it was derived from `jay-withers/template-base-repo` (dev container, pre-commit hooks, CI/CD, branch protection).
+A centralised [Renovate](https://docs.renovatebot.com/) configuration repo. Instead of every repository carrying its own full `renovate.json`, each repo extends the shared presets defined here (`extends: ["github>jay-withers/renovate"]`). Policy — schedule, auto-merge rules, ecosystem grouping — is changed once here and inherited everywhere. The repo also carries the language-agnostic scaffolding it was derived from `jay-withers/template-base-repo` (dev container, pre-commit hooks, CI/CD, branch protection).
 
 ## Presets
 
-Each preset is a self-contained JSON file at the repo root, consumed via `github>jay-withers/template-renovate:<name>` (the bare repo reference loads `default.json`):
+Each preset is a self-contained JSON file at the repo root, consumed via `github>jay-withers/renovate:<name>` (the bare repo reference loads `default.json`):
 
 - **default.json** — the recommended everything-included config. Extends `config:recommended`, the dependency dashboard, semantic commits, git sign-off, and all the ecosystem presets below except the opt-in **dev-container.json**.
 - **automerge.json** — auto-merges every update once CI is green (`platformAutomerge`), including major updates; squash-merges (`automergeStrategy: squash`).
@@ -22,14 +22,14 @@ Each preset is a self-contained JSON file at the repo root, consumed via `github
 
 Consumers override the shared config by setting options locally after the `extends` — later config wins (scalars replace, `packageRules` concatenate with later rules taking precedence).
 
-`renovate.json` in this repo dogfoods the shared config (`extends: ["local>jay-withers/template-renovate"]`) plus `autoApprove`.
+`renovate.json` in this repo dogfoods the shared config (`extends: ["local>jay-withers/renovate"]`) plus `autoApprove`.
 
 ### Editing presets
 
 - Keep each preset a standalone, valid Renovate config object with a `$schema` and a `description`.
 - Validate before pushing: `make validate` (or `npx --yes --package renovate -- renovate-config-validator --strict <files>`).
 - Every root-level `*.json` is validated in CI (see below). When you add a new preset file, add a matching row to the README table and the presets list above.
-- `renovate-config-validator` does **not** resolve remote `extends` over the network, so `default.json`'s self-references (`github>jay-withers/template-renovate:...`) validate offline.
+- `renovate-config-validator` does **not** resolve remote `extends` over the network, so `default.json`'s self-references (`github>jay-withers/renovate:...`) validate offline.
 
 ## Dev container
 
