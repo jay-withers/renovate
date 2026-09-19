@@ -12,7 +12,13 @@ Each preset is a self-contained JSON file at the repo root, consumed via `github
 
 - **default.json** — the recommended everything-included config. Extends `config:recommended`, the dependency dashboard, semantic commits, git sign-off, and all the ecosystem presets below except the opt-in **dev-container.json**.
 - **automerge.json** — auto-merges every update once CI is green (`platformAutomerge`), including major updates; squash-merges (`automergeStrategy: squash`).
-- **schedule.json** — batches updates for `before 6am on monday`.
+- **schedule.json** — opens pull requests `before 6am on monday`, and keeps the
+  open ones rebased the rest of the week (`updateNotScheduled` left at its
+  default, `rebaseWhen: behind-base-branch`). The schedule governs *creation*;
+  it must not govern rebasing, because branch protection requires an
+  up-to-date branch — `updateNotScheduled: false` stranded every open pull
+  request behind a moving `main` until the next Monday, with platform
+  automerge waiting on a requirement that could never be met.
 - **docker.json** — pins image digests, groups Docker updates.
 - **github-actions.json** — pins Actions to commit SHAs (`helpers:pinGitHubActionDigests`), groups them.
 - **terraform.json** — groups Terraform/Terragrunt providers and modules.
