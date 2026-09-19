@@ -1,19 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Shared Renovate config. Consume with: \"extends\": [\"github>jay-withers/template-renovate\"]",
+  "description": "Shared Renovate config. Consume with: \"extends\": [\"github>jay-withers/renovate\"]",
   "extends": [
     "config:recommended",
     ":dependencyDashboard",
     ":semanticCommits",
     ":gitSignOff",
     ":rebaseStalePrs",
-    "github>jay-withers/template-renovate:automerge",
-    "github>jay-withers/template-renovate:schedule",
-    "github>jay-withers/template-renovate:docker",
-    "github>jay-withers/template-renovate:github-actions",
-    "github>jay-withers/template-renovate:terraform",
-    "github>jay-withers/template-renovate:npm",
-    "github>jay-withers/template-renovate:pre-commit"
+    "github>jay-withers/renovate:automerge",
+    "github>jay-withers/renovate:schedule",
+    "github>jay-withers/renovate:docker",
+    "github>jay-withers/renovate:github-actions",
+    "github>jay-withers/renovate:terraform",
+    "github>jay-withers/renovate:npm",
+    "github>jay-withers/renovate:pre-commit"
   ],
   "labels": ["dependencies"],
   "prHourlyLimit": 4,

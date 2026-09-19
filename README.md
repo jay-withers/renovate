@@ -1,4 +1,4 @@
-# template-renovate
+# renovate
 
 Centralised [Renovate](https://docs.renovatebot.com/) configuration presets. Instead of maintaining a full `renovate.json` in every repository, each repo extends the shared presets defined here. Change the policy once, and every consuming repo picks it up.
 
@@ -11,7 +11,7 @@ Add a `renovate.json` (or `.github/renovate.json`) to a consuming repo:
 ```json
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>jay-withers/template-renovate"]
+  "extends": ["github>jay-withers/renovate"]
 }
 ```
 
@@ -21,15 +21,15 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 
 | Preset | Extend as | What it does |
 | --- | --- | --- |
-| **default** | `github>jay-withers/template-renovate` | The recommended everything-included config. Extends every ecosystem preset below plus `config:recommended`, dependency dashboard, semantic commits and sign-off, and enables the `pre-commit` manager. (Does not include **dev-container**, which is opt-in.) |
-| **automerge** | `github>jay-withers/template-renovate:automerge` | Auto-merges every update — including majors — once CI passes. |
-| **schedule** | `github>jay-withers/template-renovate:schedule` | Batches updates for before 6am on Monday to reduce mid-week churn. |
-| **docker** | `github>jay-withers/template-renovate:docker` | Pins image digests and groups Docker updates. |
-| **github-actions** | `github>jay-withers/template-renovate:github-actions` | Pins Actions to commit SHAs and groups them. |
-| **terraform** | `github>jay-withers/template-renovate:terraform` | Groups Terraform/Terragrunt providers and modules. |
-| **npm** | `github>jay-withers/template-renovate:npm` | Groups npm dev vs production dependencies and `@types`. |
-| **pre-commit** | `github>jay-withers/template-renovate:pre-commit` | Enables the pre-commit manager and groups all hook updates into one PR (they share `.pre-commit-config.yaml`). |
-| **dev-container** | `github>jay-withers/template-renovate:dev-container` | **Opt-in, not in default.** Custom managers that track binary versions pinned as `ARG *_URL` download links in dev-container image Dockerfiles (tflint, checkov, terraform-docs, pre-commit, gh, node, kubectl, helm, k9s), grouped into one "dev container tools" PR. |
+| **default** | `github>jay-withers/renovate` | The recommended everything-included config. Extends every ecosystem preset below plus `config:recommended`, dependency dashboard, semantic commits and sign-off, and enables the `pre-commit` manager. (Does not include **dev-container**, which is opt-in.) |
+| **automerge** | `github>jay-withers/renovate:automerge` | Auto-merges every update — including majors — once CI passes. |
+| **schedule** | `github>jay-withers/renovate:schedule` | Batches updates for before 6am on Monday to reduce mid-week churn. |
+| **docker** | `github>jay-withers/renovate:docker` | Pins image digests and groups Docker updates. |
+| **github-actions** | `github>jay-withers/renovate:github-actions` | Pins Actions to commit SHAs and groups them. |
+| **terraform** | `github>jay-withers/renovate:terraform` | Groups Terraform/Terragrunt providers and modules. |
+| **npm** | `github>jay-withers/renovate:npm` | Groups npm dev vs production dependencies and `@types`. |
+| **pre-commit** | `github>jay-withers/renovate:pre-commit` | Enables the pre-commit manager and groups all hook updates into one PR (they share `.pre-commit-config.yaml`). |
+| **dev-container** | `github>jay-withers/renovate:dev-container` | **Opt-in, not in default.** Custom managers that track binary versions pinned as `ARG *_URL` download links in dev-container image Dockerfiles (tflint, checkov, terraform-docs, pre-commit, gh, node, kubectl, helm, k9s), grouped into one "dev container tools" PR. |
 
 ### Picking individual presets
 
@@ -40,8 +40,8 @@ You don't have to take everything. Compose only what you need:
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "github>jay-withers/template-renovate:docker",
-    "github>jay-withers/template-renovate:github-actions"
+    "github>jay-withers/renovate:docker",
+    "github>jay-withers/renovate:github-actions"
   ]
 }
 ```
@@ -53,7 +53,7 @@ Extend the shared config, then override anything locally — later entries win:
 ```json
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>jay-withers/template-renovate"],
+  "extends": ["github>jay-withers/renovate"],
   "schedule": ["at any time"],
   "packageRules": [
     {
