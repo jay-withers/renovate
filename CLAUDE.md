@@ -20,7 +20,13 @@ Each preset is a self-contained JSON file at the repo root, consumed via `github
   request behind a moving `main` until the next Monday, with platform
   automerge waiting on a requirement that could never be met.
 - **docker.json** — pins image digests, groups Docker updates.
-- **github-actions.json** — pins Actions to commit SHAs (`helpers:pinGitHubActionDigests`), groups them.
+- **github-actions.json** — pins Actions to commit SHAs
+  (`helpers:pinGitHubActionDigests`), groups them, and holds runner labels at
+  their current major. That last rule exists because actionlint compiles its
+  known-label list in and is released rarely: GitHub shipped `ubuntu-26.04` in
+  August 2026 while v1.7.12, from March, was still the newest actionlint, so a
+  runner major is a pull request no repository that pins a runner can make
+  green. Adopting one needs a `.github/actionlint.yaml` per repo.
 - **terraform.json** — groups Terraform/Terragrunt providers and modules.
 - **npm.json** — groups npm dev vs production dependencies and `@types`.
 - **pre-commit.json** — enables the `pre-commit` manager and groups all hook updates into one PR (every hook shares `.pre-commit-config.yaml`, so separate PRs would conflict). Derived repos get frozen-hook updates for free.

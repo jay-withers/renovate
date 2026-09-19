@@ -7,6 +7,15 @@
       "description": "Group all GitHub Actions updates into a single PR",
       "matchManagers": ["github-actions"],
       "groupName": "github-actions"
+    },
+    {
+      "description": [
+        "Hold runner labels at their current major. GitHub publishes a new ubuntu image months before actionlint can validate its label: actionlint compiles its known-label list in, releases it rarely — v1.7.12, from March 2026, was still the newest when ubuntu-26.04 shipped in August — and the pre-commit hook is pinned. A runner major therefore arrives as a pull request that cannot pass CI in any repository that pins a runner.",
+        "Adopting a new runner means adding a .github/actionlint.yaml declaring the label to every repository that pins one: an estate-wide migration to make deliberately, not something to carry in a dependency update. Drop this rule when that migration happens."
+      ],
+      "matchDatasources": ["github-runners"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
