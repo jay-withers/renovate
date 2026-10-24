@@ -19,7 +19,7 @@ Each preset is a self-contained JSON file at the repo root, consumed via `github
   up-to-date branch — `updateNotScheduled: false` stranded every open pull
   request behind a moving `main` until the next Monday, with platform
   automerge waiting on a requirement that could never be met.
-- **docker.json** — pins image digests, groups Docker updates.
+- **docker.json** — pins image digests, groups Docker updates, and holds Python base-image minors (a new interpreter) for review instead of auto-merging.
 - **github-actions.json** — pins Actions to commit SHAs
   (`helpers:pinGitHubActionDigests`), groups them, and holds runner labels at
   their current major. That last rule exists because actionlint compiles its

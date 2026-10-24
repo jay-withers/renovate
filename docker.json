@@ -4,20 +4,47 @@
   "packageRules": [
     {
       "description": "Pin digests for all Docker images for reproducible builds",
-      "matchDatasources": ["docker"],
+      "matchDatasources": [
+        "docker"
+      ],
       "pinDigests": true
     },
     {
       "description": "Group Docker digest-only updates into a single PR",
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["digest"],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
       "groupName": "docker digests"
     },
     {
       "description": "Group non-major Docker image updates",
-      "matchManagers": ["dockerfile", "docker-compose", "devcontainer"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": [
+        "dockerfile",
+        "docker-compose",
+        "devcontainer"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "groupName": "docker images (non-major)"
+    },
+    {
+      "description": "A Python base-image minor (3.14 -> 3.15) is a new interpreter, not a routine update: compiled dependencies often have no wheel for it yet, so the image build fails while tests (pinned to their own python-version) still pass. Raise it alone and never auto-merge it. The container build is path-filtered and not a required check, so auto-merge does not wait for it - which is how finances, career and repo-agent all shipped an unbuildable 3.15 image.",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "python"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "groupName": "python base image (minor)",
+      "automerge": false
     }
   ]
 }
