@@ -1,8 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Auto-merge policy: auto-merge every update once CI is green, including major updates.",
+  "description": "Auto-merge policy: auto-merge every update once CI is green and the release is at least three days old, including major updates.",
   "platformAutomerge": true,
   "automergeStrategy": "squash",
+  "internalChecksFilter": "strict",
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true
@@ -23,6 +24,29 @@
         "lockFileMaintenance"
       ],
       "automerge": true
+    },
+    {
+      "description": "Wait three days after a release before raising its PR. Auto-merge plus required checks would otherwise land a compromised release as soon as CI went green; most are caught and yanked within a day or two. internalChecksFilter strict holds the PR back until the age passes, because platform auto-merge does not wait for Renovate's own pending stability check. Security fixes are unaffected: vulnerability alerts ignore minimumReleaseAge by default.",
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch",
+        "pin",
+        "pinDigest",
+        "digest",
+        "bump",
+        "rollback",
+        "replacement"
+      ],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "No wait for this account's own releases (shared workflows, dev-container images): they are built and reviewed here, and holding them back only delays fixes rolling out.",
+      "matchPackageNames": [
+        "jay-withers/**",
+        "ghcr.io/jay-withers/**"
+      ],
+      "minimumReleaseAge": null
     }
   ]
 }
