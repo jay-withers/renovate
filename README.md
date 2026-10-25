@@ -22,7 +22,7 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 | Preset | Extend as | What it does |
 | --- | --- | --- |
 | **default** | `github>jay-withers/renovate` | The recommended everything-included config. Extends every ecosystem preset below plus `config:recommended`, dependency dashboard, semantic commits and sign-off, and enables the `pre-commit` manager. (Does not include **dev-container**, which is opt-in.) |
-| **automerge** | `github>jay-withers/renovate:automerge` | Auto-merges every update — including majors — once CI passes. |
+| **automerge** | `github>jay-withers/renovate:automerge` | Auto-merges every update — including majors — once CI passes and the release is at least 3 days old (`minimumReleaseAge`; this account's own `jay-withers/*` releases and security fixes don't wait). |
 | **schedule** | `github>jay-withers/renovate:schedule` | Opens PRs before 6am on Monday to reduce mid-week churn, and keeps open PRs rebased onto the base branch the rest of the week so branch protection's up-to-date requirement cannot strand them. |
 | **docker** | `github>jay-withers/renovate:docker` | Pins image digests and groups Docker updates. |
 | **github-actions** | `github>jay-withers/renovate:github-actions` | Pins Actions to commit SHAs, groups them, and holds runner labels at their current major — actionlint cannot validate a new runner label until it is released with one, so the bump would fail CI in every repo that pins a runner. |
