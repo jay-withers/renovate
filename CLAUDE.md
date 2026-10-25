@@ -12,7 +12,8 @@ Each preset is a self-contained JSON file at the repo root, consumed via `github
 
 - **default.json** — the recommended everything-included config. Extends `config:recommended`, the dependency dashboard, semantic commits, git sign-off, and all the ecosystem presets below except the opt-in **dev-container.json**.
 - **automerge.json** — auto-merges every update once CI is green (`platformAutomerge`), including major updates; squash-merges (`automergeStrategy: squash`). Every update waits `minimumReleaseAge: 3 days` first, and `internalChecksFilter: strict` keeps the PR unopened until then — platform auto-merge does not wait for Renovate's own pending stability check, so a PR opened early could merge early. `jay-withers/**` and `ghcr.io/jay-withers/**` are exempt; security fixes ignore the age by default.
-- **schedule.json** — opens pull requests `before 6am on monday`, and keeps the
+- **schedule.json** — opens pull requests `on monday` (all day: a six-hour
+  window was missed entirely by Mend's hosted runs in some repos), and keeps the
   open ones rebased the rest of the week (`updateNotScheduled` left at its
   default, `rebaseWhen: behind-base-branch`). The schedule governs *creation*;
   it must not govern rebasing, because branch protection requires an
