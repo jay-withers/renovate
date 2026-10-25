@@ -1,13 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": [
-    "Batch new pull requests for the weekend / early Monday to reduce mid-week churn and CI load.",
-    "The schedule governs when Renovate opens pull requests, not whether it keeps open ones mergeable: updateNotScheduled is left at its default so branches that fall behind are rebased whenever Renovate runs. Set to false, it stranded every open pull request — branch protection requires an up-to-date branch, main moves during the week, and Renovate was not allowed to rebase until the next Monday window, by which point main had usually moved again. Backlogs 19 days deep, and platform automerge waiting on a requirement that could never be met.",
+    "Batch new pull requests into Monday to reduce mid-week churn and CI load.",
+    "All of Monday, not `before 6am on monday`: Mend's hosted Renovate runs each repository every few hours with no guarantee of when, and a six-hour weekly window could be missed every week. security-testing never had a single run land in it, so Renovate never opened one pull request there, its lock file was never refreshed, and a CRITICAL certifi sat unfixed. A whole day gives every repository several runs inside the window. repo-agent's scan runs Sunday evening, before the window opens, so it still sees the settled week.",
+    "The schedule governs when Renovate opens pull requests, not whether it keeps open ones mergeable: updateNotScheduled is left at its default so branches that fall behind are rebased whenever Renovate runs. Set to false, it stranded every open pull request \u2014 branch protection requires an up-to-date branch, main moves during the week, and Renovate was not allowed to rebase until the next Monday window, by which point main had usually moved again. Backlogs 19 days deep, and platform automerge waiting on a requirement that could never be met.",
     "rebaseWhen is stated rather than left to auto: auto's behaviour is documented as no longer guaranteed when platformAutomerge is enabled, which the automerge preset sets."
   ],
-  "schedule": ["before 6am on monday"],
+  "schedule": [
+    "on monday"
+  ],
   "lockFileMaintenance": {
-    "schedule": ["before 6am on monday"]
+    "schedule": [
+      "on monday"
+    ]
   },
   "updateNotScheduled": true,
   "rebaseWhen": "behind-base-branch"
