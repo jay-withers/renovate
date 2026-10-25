@@ -6,7 +6,9 @@
       "customType": "regex",
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "terraform-linters/tflint",
-      "managerFilePatterns": ["/^images/terraform/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/terraform/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG TFLINT_URL=\"https://github\\.com/terraform-linters/tflint/releases/download/v(?<currentValue>[^/]+)/[^\"]+\""
       ],
@@ -17,7 +19,9 @@
       "customType": "regex",
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "bridgecrewio/checkov",
-      "managerFilePatterns": ["/^images/terraform/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/terraform/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG CHECKOV_URL=\"https://github\\.com/bridgecrewio/checkov/releases/download/(?<currentValue>[^/]+)/[^\"]+\""
       ],
@@ -28,7 +32,9 @@
       "customType": "regex",
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "terraform-docs/terraform-docs",
-      "managerFilePatterns": ["/^images/terraform/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/terraform/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG TERRAFORM_DOCS_URL=\"https://github\\.com/terraform-docs/terraform-docs/releases/download/v(?<currentValue>[^/]+)/[^\"]+\""
       ],
@@ -39,7 +45,9 @@
       "customType": "regex",
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "pre-commit/pre-commit",
-      "managerFilePatterns": ["/^images/base/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/base/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG PRE_COMMIT_URL=\"https://github\\.com/pre-commit/pre-commit/releases/download/v(?<currentValue>[^/]+)/[^\"]+\""
       ],
@@ -50,7 +58,9 @@
       "customType": "regex",
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "koalaman/shellcheck",
-      "managerFilePatterns": ["/^images/base/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/base/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG SHELLCHECK_URL=\"https://github\\.com/koalaman/shellcheck/releases/download/v(?<currentValue>[^/]+)/[^\"]+\""
       ],
@@ -60,8 +70,23 @@
     {
       "customType": "regex",
       "datasourceTemplate": "github-releases",
+      "depNameTemplate": "astral-sh/uv",
+      "managerFilePatterns": [
+        "/^images/base/Dockerfile$/"
+      ],
+      "matchStrings": [
+        "ARG UV_URL=\"https://github\\.com/astral-sh/uv/releases/download/(?<currentValue>[^/]+)/[^\"]+\""
+      ],
+      "packageNameTemplate": "astral-sh/uv",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "github-releases",
       "depNameTemplate": "cli/cli",
-      "managerFilePatterns": ["/^images/base/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/base/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG GH_URL=\"https://github\\.com/cli/cli/releases/download/v(?<currentValue>[^/]+)/[^\"]+\""
       ],
@@ -72,7 +97,9 @@
       "customType": "regex",
       "datasourceTemplate": "node-version",
       "depNameTemplate": "node",
-      "managerFilePatterns": ["/^images/base/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/base/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG NODE_URL=\"https://nodejs\\.org/dist/v(?<currentValue>[^/]+)/[^\"]+\""
       ],
@@ -82,7 +109,9 @@
       "customType": "regex",
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "kubernetes/kubernetes",
-      "managerFilePatterns": ["/^images/k8s/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/k8s/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG KUBECTL_URL=\"https://dl\\.k8s\\.io/release/v(?<currentValue>[^/]+)/[^\"]+\""
       ],
@@ -93,7 +122,9 @@
       "customType": "regex",
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "helm/helm",
-      "managerFilePatterns": ["/^images/k8s/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/k8s/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG HELM_URL=\"https://get\\.helm\\.sh/helm-v(?<currentValue>[^-]+)-[^\"]+\""
       ],
@@ -104,7 +135,9 @@
       "customType": "regex",
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "derailed/k9s",
-      "managerFilePatterns": ["/^images/k8s/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/^images/k8s/Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG K9S_URL=\"https://github\\.com/derailed/k9s/releases/download/v(?<currentValue>[^/]+)/[^\"]+\""
       ],
@@ -124,8 +157,12 @@
     },
     {
       "description": "Leaf images build FROM a base image that the repo's own CD builds and publishes (injected via the BASE_IMAGE build arg), so its version is managed by CD, not Renovate. Disable it so Renovate doesn't pin a digest that would fight CD - and doesn't emit 'no docker auth found' when that ghcr base package is private. Scoped to ghcr.io/.../base so the public upstream base (e.g. mcr.microsoft.com/devcontainers/base) keeps updating.",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/^ghcr\\.io/.+/base$/"],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "/^ghcr\\.io/.+/base$/"
+      ],
       "enabled": false
     }
   ]
