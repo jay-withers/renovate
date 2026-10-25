@@ -2,7 +2,10 @@
   "name": "generic",
   "image": "ghcr.io/jay-withers/dev-containers/base:latest@sha256:1edc86bea67724657f94bf55274e2140658b86587ca9a7e592a1306ebbd36edb",
   "mounts": [
-    "source=${localEnv:HOME}/Git,target=/Users/jay/Git,type=bind"
+    // The same source works on every host: Docker Desktop (macOS, Windows)
+    // resolves it inside its own VM. docker-socket-setup handles the ownership
+    // difference (a docker group on Linux, a root-owned socket on Desktop).
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
   ],
   "customizations": {
     "vscode": {
@@ -18,5 +21,6 @@
     }
   },
   "remoteUser": "vscode",
-  "postCreateCommand": "make install"
+  "postCreateCommand": "make install",
+  "postStartCommand": "sudo /usr/local/bin/docker-socket-setup"
 }
