@@ -45,6 +45,17 @@
       ],
       "groupName": "python base image (minor)",
       "automerge": false
+    },
+    {
+      "description": "dev-containers' python-app and python-app-builder are one pair: an app builds its venv in the builder and runs it in python-app, and a venv only works under the interpreter that built it. Updating one without the other is the market-agent outage (runtime moved to 3.14, builder stayed on 3.12, every import failed). Both are published together at one version, so raise them in one PR. Listed last so this groupName wins over the generic digest and non-major groups above. Auto-merge stays on: these move weekly with Debian security updates, and every app's required container-build check builds the image before it can merge.",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/jay-withers/dev-containers/python-app",
+        "ghcr.io/jay-withers/dev-containers/python-app-builder"
+      ],
+      "groupName": "python app base images"
     }
   ]
 }
