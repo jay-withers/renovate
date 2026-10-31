@@ -70,6 +70,6 @@ Hooks are in `.pre-commit-config.yaml`, pinned by commit SHA with the tag as a f
 
 Workflows are prefixed `ci-` (pull-request checks) or `cd-` (post-merge delivery):
 
-- **ci-lint** (`.github/workflows/ci-lint.yml`): runs all linters on PRs to `main` via the reusable workflow `jay-withers/template-pipelines/.github/workflows/pre-commit.yml`. Its status-check context is `pre-commit / Pre-commit` (`<caller job id> / <reusable job name>`).
+- **ci-lint** (`.github/workflows/ci-lint.yml`): runs all linters on PRs to `main` via the reusable workflow `jay-withers/workflows/.github/workflows/pre-commit.yml`. Its status-check context is `pre-commit / Pre-commit` (`<caller job id> / <reusable job name>`).
 - **ci-validate** (`.github/workflows/ci-validate.yml`): runs `renovate-config-validator --strict` over every root `*.json` preset on PRs to `main`. Its status-check context is `validate`.
-- **cd-tag** (`.github/workflows/cd-tag.yml`): auto-creates a semver tag and matching GitHub release on every merge to `main` from the Conventional Commits since the last release, via `jay-withers/template-pipelines/.github/workflows/release.yml` (default bump: patch).
+- **cd-tag** (`.github/workflows/cd-tag.yml`): auto-creates a semver tag and matching GitHub release on every merge to `main` from the Conventional Commits since the last release, via `jay-withers/workflows/.github/workflows/release.yml` (default bump: patch).

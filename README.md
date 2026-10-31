@@ -99,9 +99,9 @@ chore: bump pre-commit hooks
 
 Workflows are prefixed `ci-` (pull-request checks) or `cd-` (post-merge delivery):
 
-- **`.github/workflows/ci-lint.yml`** — runs all pre-commit hooks on PRs to `main` via the shared reusable workflow `jay-withers/template-pipelines/.github/workflows/pre-commit.yml`. Status check: `pre-commit / Pre-commit`.
+- **`.github/workflows/ci-lint.yml`** — runs all pre-commit hooks on PRs to `main` via the shared reusable workflow `jay-withers/workflows/.github/workflows/pre-commit.yml`. Status check: `pre-commit / Pre-commit`.
 - **`.github/workflows/ci-validate.yml`** — validates every root `*.json` preset with `renovate-config-validator --strict`. Status check: `validate`.
-- **`.github/workflows/cd-tag.yml`** — on every merge to `main`, creates a semver tag and matching GitHub release from the Conventional Commits since the last release (default bump: patch), via `jay-withers/template-pipelines/.github/workflows/release.yml`.
+- **`.github/workflows/cd-tag.yml`** — on every merge to `main`, creates a semver tag and matching GitHub release from the Conventional Commits since the last release (default bump: patch), via `jay-withers/workflows/.github/workflows/release.yml`.
 
 ## Structure
 
