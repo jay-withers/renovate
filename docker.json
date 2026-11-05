@@ -47,7 +47,7 @@
       "automerge": false
     },
     {
-      "description": "dev-containers' python-app and python-app-builder are one pair: an app builds its venv in the builder and runs it in python-app, and a venv only works under the interpreter that built it. Updating one without the other is the market-agent outage (runtime moved to 3.14, builder stayed on 3.12, every import failed). Both are published together at one version, so raise them in one PR. Listed last so this groupName wins over the generic digest and non-major groups above. Auto-merge stays on: these move weekly with Debian security updates, and every app's required container-build check builds the image before it can merge.",
+      "description": "dev-containers' python-app and python-app-builder are one pair: an app builds its venv in the builder and runs it in python-app, and a venv only works under the interpreter that built it. Updating one without the other is the market-agent outage (runtime moved to 3.14, builder stayed on 3.12, every import failed). Both are published together at one version, so raise them in one PR. Listed last so this groupName wins over the generic digest and non-major groups above. Auto-merge stays on: these move weekly with Debian security updates, and every app's required container-build check builds the image before it can merge. Exempt from schedule.json's Monday window (`at any time`): a release of these is almost always a security rebuild, and dev-containers' cd-patch-check dispatches one mid-week when python-app:latest has a fixable HIGH or CRITICAL OS finding, which is exactly what each app's container-build Trivy gate fails on. Held until Monday, it left market-agent's PRs failing that gate (2026-11-05, apt 2.6.2). jay-withers/** images are already exempt from minimumReleaseAge, so the PR opens on Renovate's next run.",
       "matchDatasources": [
         "docker"
       ],
@@ -55,7 +55,10 @@
         "ghcr.io/jay-withers/dev-containers/python-app",
         "ghcr.io/jay-withers/dev-containers/python-app-builder"
       ],
-      "groupName": "python app base images"
+      "groupName": "python app base images",
+      "schedule": [
+        "at any time"
+      ]
     }
   ]
 }
