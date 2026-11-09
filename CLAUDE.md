@@ -28,7 +28,7 @@ Each preset is a self-contained JSON file at the repo root, consumed via `github
   August 2026 while v1.7.12, from March, was still the newest actionlint, so a
   runner major is a pull request no repository that pins a runner can make
   green. Adopting one needs a `.github/actionlint.yaml` per repo.
-- **terraform.json** — groups Terraform/Terragrunt providers and modules.
+- **terraform.json** — groups Terraform/Terragrunt providers and modules, except a minor bump of a 0.x one, which gets its own PR: below 1.0 a minor may break the interface (Key Vault AVM 0.13 did), and grouped it held back every other update with it.
 - **npm.json** — groups npm dev vs production dependencies and `@types`.
 - **pre-commit.json** — enables the `pre-commit` manager and groups all hook updates into one PR (every hook shares `.pre-commit-config.yaml`, so separate PRs would conflict). Derived repos get frozen-hook updates for free.
 - **dev-container.json** — **opt-in, not extended by `default.json`.** Custom `regex` managers that track binary versions pinned as `ARG *_URL="…download/v<currentValue>/…"` links in dev-container image Dockerfiles (`images/{base,terraform,k8s}/Dockerfile`), grouped into one `dev container tools` PR. Consumed by `jay-withers/dev-container`, which extends the bare template plus this preset. Kept out of `default.json` because its file paths and toolset are specific to that repo's layout, not general policy.
