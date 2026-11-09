@@ -1,11 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Terraform / Terragrunt: group providers and modules.",
+  "description": "Terraform / Terragrunt: group providers and modules, except that a minor bump of a 0.x module or provider gets its own PR.",
   "packageRules": [
     {
-      "description": "Group non-major Terraform provider and module updates",
+      "description": "Group patch updates of Terraform providers and modules",
       "matchManagers": ["terraform", "terraform-version", "terragrunt", "terragrunt-version"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": ["patch"],
+      "groupName": "terraform (non-major)"
+    },
+    {
+      "description": "Group minor updates too, but only from 1.0 up. Below 1.0 a minor bump may break the interface, and most Azure Verified Modules are 0.x: avm-res-keyvault-vault 0.13.0 dropped resource_group_name, and because it was grouped with eight compatible module bumps in terraform-root-aks#91, none of them could merge. The negated match on the current constraint (~> 0.12, ~> 0.12.0, = 0.5.0, 0.5.0) leaves a 0.x minor bump ungrouped, so it arrives as its own PR and only that update waits on the fix.",
+      "matchManagers": ["terraform", "terraform-version", "terragrunt", "terragrunt-version"],
+      "matchUpdateTypes": ["minor"],
+      "matchCurrentValue": "!/^\\s*(~>|>=|>|=)?\\s*v?0\\./",
       "groupName": "terraform (non-major)"
     },
     {
