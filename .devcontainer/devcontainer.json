@@ -1,6 +1,6 @@
 {
   "name": "generic",
-  "image": "ghcr.io/jay-withers/dev-containers/base:latest@sha256:c7f0e4c17912dcb5a023b5afcc7c98b031d87fe2531df3dee94b579426aea13f",
+  "image": "ghcr.io/jay-withers/dev-containers/base:v0.20.22@sha256:3b3acbbe4ce169bb7f9755d89b088b6e227de7f3be7e0115935f4bdf46d0ed43",
   "mounts": [
     // The same source works on every host: Docker Desktop (macOS, Windows)
     // resolves it inside its own VM. docker-socket-setup handles the ownership

@@ -46,7 +46,7 @@ Consumers override the shared config by setting options locally after the `exten
 
 ## Dev container
 
-Built around `.devcontainer/devcontainer.json` (image `ghcr.io/jay-withers/dev-containers/base:latest`), which runs `make install` on creation to wire up the pre-commit hooks. Prefer working inside the container so tooling versions match CI.
+Built around `.devcontainer/devcontainer.json` (image `ghcr.io/jay-withers/dev-containers/base` (pinned by version and digest)), which runs `make install` on creation to wire up the pre-commit hooks. Prefer working inside the container so tooling versions match CI.
 
 ## Commands
 
