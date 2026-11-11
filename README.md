@@ -2,7 +2,7 @@
 
 Centralised [Renovate](https://docs.renovatebot.com/) configuration presets. Instead of maintaining a full `renovate.json` in every repository, each repo extends the shared presets defined here. Change the policy once, and every consuming repo picks it up.
 
-Built on [`template-base-repo`](https://github.com/jay-withers/template-base-repo), so it also ships a dev container, pre-commit hooks, CI/CD and branch-protection scaffolding.
+Built on [`template-base-repo`](https://github.com/jay-withers/template-base-repo), so it also ships pinned tools (`mise.toml`), pre-commit hooks, CI/CD and branch-protection scaffolding.
 
 ## Usage
 
@@ -29,7 +29,7 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 | **terraform** | `github>jay-withers/renovate:terraform` | Groups Terraform/Terragrunt providers and modules, except a minor bump of a 0.x one, which gets its own PR (below 1.0 a minor may break the interface). |
 | **npm** | `github>jay-withers/renovate:npm` | Groups npm dev vs production dependencies and `@types`. |
 | **pre-commit** | `github>jay-withers/renovate:pre-commit` | Enables the pre-commit manager and groups all hook updates into one PR (they share `.pre-commit-config.yaml`). |
-| **mise** | `github>jay-withers/renovate:mise` | Enables the mise manager and groups every tool update in `mise.toml` (and its `mise.lock`) into one "mise tools" PR. |
+| **mise** | `github>jay-withers/renovate:mise` | Enables the mise manager and groups every tool update in `mise.toml` (and its `mise.lock`) into one "mise tools" PR. A Python minor gets its own PR and is never auto-merged, like docker's base-image minors. |
 | **dev-container** | `github>jay-withers/renovate:dev-container` | **Opt-in, not in default.** Custom managers that track binary versions pinned as `ARG *_URL` download links in dev-container image Dockerfiles (tflint, checkov, terraform-docs, pre-commit, gh, node, kubectl, helm, k9s), grouped into one "dev container tools" PR. |
 
 ### Picking individual presets
@@ -67,8 +67,8 @@ Extend the shared config, then override anything locally — later entries win:
 
 ## Getting started (developing this repo)
 
-1. Open it in the dev container (VS Code: **Reopen in Container**, or GitHub Codespaces). The container runs `make install` on creation to wire up the pre-commit hooks.
-2. Outside a dev container, install the hooks manually with `make install`.
+1. Set up a machine once with [jay-withers/toolchain](https://github.com/jay-withers/toolchain), which installs [mise](https://mise.jdx.dev).
+2. In this repo: `mise trust && make install` (it runs `mise install` first, then wires up the pre-commit hooks).
 
 ## Commands
 
@@ -107,8 +107,7 @@ Workflows are prefixed `ci-` (pull-request checks) or `cd-` (post-merge delivery
 ## Structure
 
 ```text
-.devcontainer/
-  devcontainer.json    # dev container (ghcr.io/jay-withers/dev-containers/base)
+mise.toml              # pinned tool versions, used locally and in CI
 .github/
   workflows/
     ci-lint.yml        # lints all files on PRs to main (reusable workflow)

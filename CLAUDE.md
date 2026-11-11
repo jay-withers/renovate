@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo does
 
-A centralised [Renovate](https://docs.renovatebot.com/) configuration repo. Instead of every repository carrying its own full `renovate.json`, each repo extends the shared presets defined here (`extends: ["github>jay-withers/renovate"]`). Policy — schedule, auto-merge rules, ecosystem grouping — is changed once here and inherited everywhere. The repo also carries the language-agnostic scaffolding it was derived from `jay-withers/template-base-repo` (dev container, pre-commit hooks, CI/CD, branch protection).
+A centralised [Renovate](https://docs.renovatebot.com/) configuration repo. Instead of every repository carrying its own full `renovate.json`, each repo extends the shared presets defined here (`extends: ["github>jay-withers/renovate"]`). Policy — schedule, auto-merge rules, ecosystem grouping — is changed once here and inherited everywhere. The repo also carries the language-agnostic scaffolding it was derived from `jay-withers/template-base-repo` (pinned tools in `mise.toml`, pre-commit hooks, CI/CD, branch protection).
 
 ## Presets
 
@@ -31,7 +31,7 @@ Each preset is a self-contained JSON file at the repo root, consumed via `github
 - **terraform.json** — groups Terraform/Terragrunt providers and modules, except a minor bump of a 0.x one, which gets its own PR: below 1.0 a minor may break the interface (Key Vault AVM 0.13 did), and grouped it held back every other update with it.
 - **npm.json** — groups npm dev vs production dependencies and `@types`.
 - **pre-commit.json** — enables the `pre-commit` manager and groups all hook updates into one PR (every hook shares `.pre-commit-config.yaml`, so separate PRs would conflict). Derived repos get frozen-hook updates for free.
-- **mise.json** — enables the `mise` manager and groups every tool update in a repo's `mise.toml` into one `mise tools` PR (all tools share `mise.toml` and `mise.lock`, so separate PRs would conflict). `mise.toml` is where each repo pins its developer and CI toolchain (terraform, tflint, python, uv, ...), replacing `.terraform-version` and the dev-container images. Renovate rewrites `mise.lock` only where it may run mise (`allowedUnsafeExecutions` includes `mise`) and the lock already exists.
+- **mise.json** — enables the `mise` manager and groups every tool update in a repo's `mise.toml` into one `mise tools` PR (all tools share `mise.toml` and `mise.lock`, so separate PRs would conflict). `mise.toml` is where each repo pins its developer and CI toolchain (terraform, tflint, python, uv, ...), replacing `.terraform-version` and the dev-container images. A Python minor (3.14 → 3.15) is raised alone and never auto-merged, mirroring docker.json's base-image hold, since CI's interpreter must stay on the runtime image's. Renovate rewrites `mise.lock` only where it may run mise (`allowedUnsafeExecutions` includes `mise`) and the lock already exists.
 - **dev-container.json** — **opt-in, not extended by `default.json`.** Custom `regex` managers that track binary versions pinned as `ARG *_URL="…download/v<currentValue>/…"` links in dev-container image Dockerfiles (`images/{base,terraform,k8s}/Dockerfile`), grouped into one `dev container tools` PR. Consumed by `jay-withers/dev-container`, which extends the bare template plus this preset. Kept out of `default.json` because its file paths and toolset are specific to that repo's layout, not general policy.
 
 Consumers override the shared config by setting options locally after the `extends` — later config wins (scalars replace, `packageRules` concatenate with later rules taking precedence).
@@ -45,9 +45,9 @@ Consumers override the shared config by setting options locally after the `exten
 - Every root-level `*.json` is validated in CI (see below). When you add a new preset file, add a matching row to the README table and the presets list above.
 - `renovate-config-validator` does **not** resolve remote `extends` over the network, so `default.json`'s self-references (`github>jay-withers/renovate:...`) validate offline.
 
-## Dev container
+## Tools
 
-Built around `.devcontainer/devcontainer.json` (image `ghcr.io/jay-withers/dev-containers/base` (pinned by version and digest)), which runs `make install` on creation to wire up the pre-commit hooks. Prefer working inside the container so tooling versions match CI.
+`mise.toml` pins Python, pre-commit, shellcheck and Node (for `make validate`'s `npx renovate-config-validator`). `make install` runs `mise install`, then wires up the hooks; CI installs the same versions. A machine is set up once with jay-withers/toolchain. There is no dev container.
 
 ## Commands
 
