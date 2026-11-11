@@ -13,7 +13,8 @@
     "github>jay-withers/renovate:github-actions",
     "github>jay-withers/renovate:terraform",
     "github>jay-withers/renovate:npm",
-    "github>jay-withers/renovate:pre-commit"
+    "github>jay-withers/renovate:pre-commit",
+    "github>jay-withers/renovate:mise"
   ],
   "labels": ["dependencies"],
   "prHourlyLimit": 4,

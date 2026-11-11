@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "mise tools: enable the manager and group every tool update in mise.toml into a single PR, since all tools share one mise.toml and mise.lock and separate PRs would conflict.",
+  "mise": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "description": "Group all mise tool updates into one PR (they all edit the same mise.toml and mise.lock)",
+      "matchManagers": ["mise"],
+      "groupName": "mise tools",
+      "addLabels": ["mise"]
+    }
+  ]
+}

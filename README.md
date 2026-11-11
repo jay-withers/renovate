@@ -21,7 +21,7 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 
 | Preset | Extend as | What it does |
 | --- | --- | --- |
-| **default** | `github>jay-withers/renovate` | The recommended everything-included config. Extends every ecosystem preset below plus `config:recommended`, dependency dashboard, semantic commits and sign-off, and enables the `pre-commit` manager. (Does not include **dev-container**, which is opt-in.) |
+| **default** | `github>jay-withers/renovate` | The recommended everything-included config. Extends every ecosystem preset below plus `config:recommended`, dependency dashboard, semantic commits and sign-off, and enables the `pre-commit` and `mise` managers. (Does not include **dev-container**, which is opt-in.) |
 | **automerge** | `github>jay-withers/renovate:automerge` | Auto-merges every update — including majors — once CI passes and the release is at least 3 days old (`minimumReleaseAge`; this account's own `jay-withers/*` releases and security fixes don't wait). |
 | **schedule** | `github>jay-withers/renovate:schedule` | Opens PRs on Mondays (all day, so the hosted app always gets a run in the window) to reduce mid-week churn (dev-containers' python app base images are the exception: docker.json opens those at any time, since they are security rebuilds), and keeps open PRs rebased onto the base branch the rest of the week so branch protection's up-to-date requirement cannot strand them. |
 | **docker** | `github>jay-withers/renovate:docker` | Pins image digests and groups Docker updates. |
@@ -29,6 +29,7 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 | **terraform** | `github>jay-withers/renovate:terraform` | Groups Terraform/Terragrunt providers and modules, except a minor bump of a 0.x one, which gets its own PR (below 1.0 a minor may break the interface). |
 | **npm** | `github>jay-withers/renovate:npm` | Groups npm dev vs production dependencies and `@types`. |
 | **pre-commit** | `github>jay-withers/renovate:pre-commit` | Enables the pre-commit manager and groups all hook updates into one PR (they share `.pre-commit-config.yaml`). |
+| **mise** | `github>jay-withers/renovate:mise` | Enables the mise manager and groups every tool update in `mise.toml` (and its `mise.lock`) into one "mise tools" PR. |
 | **dev-container** | `github>jay-withers/renovate:dev-container` | **Opt-in, not in default.** Custom managers that track binary versions pinned as `ARG *_URL` download links in dev-container image Dockerfiles (tflint, checkov, terraform-docs, pre-commit, gh, node, kubectl, helm, k9s), grouped into one "dev container tools" PR. |
 
 ### Picking individual presets
