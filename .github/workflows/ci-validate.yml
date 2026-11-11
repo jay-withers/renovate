@@ -27,7 +27,7 @@ jobs:
         run: |
           set -euo pipefail
           # Renovate presets live at the repo root; nested JSON (e.g.
-          # .devcontainer/devcontainer.json) is not Renovate config.
+          # .vscode/extensions.json) is not Renovate config.
           mapfile -t files < <(git ls-files '*.json' | grep -v '/' || true)
           echo "Validating:"
           printf '%s\n' "${files[@]}"
