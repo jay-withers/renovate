@@ -10,7 +10,7 @@ A centralised [Renovate](https://docs.renovatebot.com/) configuration repo. Inst
 
 Each preset is a self-contained JSON file at the repo root, consumed via `github>jay-withers/renovate:<name>` (the bare repo reference loads `default.json`):
 
-- **default.json** — the recommended everything-included config. Extends `config:recommended`, the dependency dashboard, semantic commits, git sign-off, and all the ecosystem presets below except the opt-in **dev-container.json**.
+- **default.json** — the recommended everything-included config. Extends `config:recommended`, the dependency dashboard, semantic commits, git sign-off, and all the ecosystem presets below.
 - **automerge.json** — auto-merges every update once CI is green (`platformAutomerge`), including major updates; squash-merges (`automergeStrategy: squash`). Every update waits `minimumReleaseAge: 3 days` first, and `internalChecksFilter: strict` keeps the PR unopened until then — platform auto-merge does not wait for Renovate's own pending stability check, so a PR opened early could merge early. `jay-withers/**` and `ghcr.io/jay-withers/**` are exempt; security fixes ignore the age by default.
 - **schedule.json** — opens pull requests `on monday` (all day: a six-hour
   window was missed entirely by Mend's hosted runs in some repos), and keeps the
@@ -32,7 +32,6 @@ Each preset is a self-contained JSON file at the repo root, consumed via `github
 - **npm.json** — groups npm dev vs production dependencies and `@types`.
 - **pre-commit.json** — enables the `pre-commit` manager and groups all hook updates into one PR (every hook shares `.pre-commit-config.yaml`, so separate PRs would conflict). Derived repos get frozen-hook updates for free.
 - **mise.json** — enables the `mise` manager and groups every tool update in a repo's `mise.toml` into one `mise tools` PR (all tools share `mise.toml` and `mise.lock`, so separate PRs would conflict). `mise.toml` is where each repo pins its developer and CI toolchain (terraform, tflint, python, uv, ...), replacing `.terraform-version` and the dev-container images. A Python minor (3.14 → 3.15) is raised alone and never auto-merged, mirroring docker.json's base-image hold, since CI's interpreter must stay on the runtime image's. Renovate rewrites `mise.lock` only where it may run mise (`allowedUnsafeExecutions` includes `mise`) and the lock already exists.
-- **dev-container.json** — **opt-in, not extended by `default.json`.** Custom `regex` managers that track binary versions pinned as `ARG *_URL="…download/v<currentValue>/…"` links in dev-container image Dockerfiles (`images/{base,terraform,k8s}/Dockerfile`), grouped into one `dev container tools` PR. Consumed by `jay-withers/dev-container`, which extends the bare template plus this preset. Kept out of `default.json` because its file paths and toolset are specific to that repo's layout, not general policy.
 
 Consumers override the shared config by setting options locally after the `extends` — later config wins (scalars replace, `packageRules` concatenate with later rules taking precedence).
 

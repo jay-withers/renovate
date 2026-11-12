@@ -41,7 +41,7 @@
       "minimumReleaseAge": "3 days"
     },
     {
-      "description": "No wait for this account's own releases (shared workflows, dev-container images): they are built and reviewed here, and holding them back only delays fixes rolling out.",
+      "description": "No wait for this account's own releases (shared workflows, dev-containers' images): they are built and reviewed here, and holding them back only delays fixes rolling out.",
       "matchPackageNames": [
         "jay-withers/**",
         "ghcr.io/jay-withers/**"
