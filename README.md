@@ -2,7 +2,7 @@
 
 Centralised [Renovate](https://docs.renovatebot.com/) configuration presets. Instead of maintaining a full `renovate.json` in every repository, each repo extends the shared presets defined here. Change the policy once, and every consuming repo picks it up.
 
-Built on [`template-base-repo`](https://github.com/jay-withers/template-base-repo), so it also ships pinned tools (`mise.toml`), pre-commit hooks, CI/CD and branch-protection scaffolding.
+Built on [`template-repo-base`](https://github.com/jay-withers/template-repo-base), so it also ships pinned tools (`mise.toml`), pre-commit hooks, CI/CD and branch-protection scaffolding.
 
 ## Usage
 
@@ -21,10 +21,10 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 
 | Preset | Extend as | What it does |
 | --- | --- | --- |
-| **default** | `github>jay-withers/renovate` | The recommended everything-included config. Extends every ecosystem preset below plus `config:recommended`, dependency dashboard, semantic commits and sign-off, and enables the `pre-commit` and `mise` managers. |
+| **default** | `github>jay-withers/renovate` | The recommended everything-included config. Extends every preset below plus `config:recommended`, the dependency dashboard, semantic commits, sign-off and stale-PR rebasing. Commits are prefixed `chore(deps):`, PRs get a `dependencies` label plus an ecosystem one (`docker`, `github-actions`, `terraform`, `javascript`), and Renovate opens at most 4 an hour and 20 at once. |
 | **automerge** | `github>jay-withers/renovate:automerge` | Auto-merges every update — including majors — once CI passes and the release is at least 3 days old (`minimumReleaseAge`; this account's own `jay-withers/*` releases and security fixes don't wait). |
 | **schedule** | `github>jay-withers/renovate:schedule` | Opens PRs on Mondays (all day, so the hosted app always gets a run in the window) to reduce mid-week churn (dev-containers' python app base images are the exception: docker.json opens those at any time, since they are security rebuilds), and keeps open PRs rebased onto the base branch the rest of the week so branch protection's up-to-date requirement cannot strand them. |
-| **docker** | `github>jay-withers/renovate:docker` | Pins image digests and groups Docker updates. |
+| **docker** | `github>jay-withers/renovate:docker` | Pins image digests and groups Docker updates (digests together, non-major together). A Python base-image minor gets its own PR and is never auto-merged. dev-containers' `python-app` and `python-app-builder` images always move together in one PR, at any time of the week (they are usually security rebuilds). |
 | **github-actions** | `github>jay-withers/renovate:github-actions` | Pins Actions to commit SHAs, groups them, and holds runner labels at their current major — actionlint cannot validate a new runner label until it is released with one, so the bump would fail CI in every repo that pins a runner. |
 | **terraform** | `github>jay-withers/renovate:terraform` | Groups Terraform/Terragrunt providers and modules, except a minor bump of a 0.x one, which gets its own PR (below 1.0 a minor may break the interface). |
 | **npm** | `github>jay-withers/renovate:npm` | Groups npm dev vs production dependencies and `@types`. |
@@ -74,7 +74,7 @@ Extend the shared config, then override anything locally — later entries win:
 Run `make` (or `make help`) to list the available targets:
 
 ```bash
-make install           # install pre-commit hooks (run once after cloning)
+make install           # install mise tools and pre-commit hooks (run once after cloning)
 make validate          # validate all Renovate presets with renovate-config-validator
 make lint              # run all pre-commit hooks against every file
 ```
@@ -97,10 +97,11 @@ chore: bump pre-commit hooks
 
 ## CI/CD
 
-Workflows are prefixed `ci-` (pull-request checks) or `cd-` (post-merge delivery):
+Workflows are prefixed `ci-` (pull-request checks) or `cd-` (post-merge delivery). All but `ci-validate` call a shared workflow in [jay-withers/workflows](https://github.com/jay-withers/workflows), pinned by SHA:
 
 - **`.github/workflows/ci-lint.yml`** — runs all pre-commit hooks on PRs to `main` via the shared reusable workflow `jay-withers/workflows/.github/workflows/pre-commit.yml`. Status check: `pre-commit / Pre-commit`.
 - **`.github/workflows/ci-validate.yml`** — validates every root `*.json` preset with `renovate-config-validator --strict`. Status check: `validate`.
+- **`.github/workflows/ci-codeql.yml`** — CodeQL code scanning of the workflows, on PRs, on `main` and weekly. Results land in Security → Code scanning; the job doesn't fail on findings.
 - **`.github/workflows/cd-tag.yml`** — on every merge to `main`, creates a semver tag and matching GitHub release from the Conventional Commits since the last release (default bump: patch), via `jay-withers/workflows/.github/workflows/release.yml`.
 
 ## Structure
@@ -111,6 +112,7 @@ mise.toml              # pinned tool versions, used locally and in CI
   workflows/
     ci-lint.yml        # lints all files on PRs to main (reusable workflow)
     ci-validate.yml    # validates Renovate presets on PRs to main
+    ci-codeql.yml      # CodeQL over the workflows
     cd-tag.yml         # auto-tags + releases on merge to main
 default.json           # the recommended shared preset (extend this)
 automerge.json         # auto-merge policy preset
@@ -120,6 +122,7 @@ github-actions.json    # GitHub Actions preset
 terraform.json         # Terraform / Terragrunt preset
 npm.json               # Node / npm preset
 pre-commit.json        # pre-commit hooks preset
+mise.json              # mise tools preset
 renovate.json          # this repo dogfoods its own config
 .editorconfig          # baseline editor settings
 .gitattributes         # git-level LF normalization
