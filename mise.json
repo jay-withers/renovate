@@ -16,11 +16,11 @@
       ]
     },
     {
-      "description": "A Python minor in mise.toml (3.14 -> 3.15) is a new interpreter, the same hazard docker.json holds back for the base image: CI's tests would move to it while the runtime image stays put, so a pass would say nothing about what ships. Raise it alone and never auto-merge it; move it together with the python-app images.",
+      "description": "A Python minor in mise.toml (3.14 -> 3.15) is a new interpreter, the same hazard docker.json holds back for the base image: CI's tests would move to it while the runtime image stays put, so a pass would say nothing about what ships. Raise it alone and never auto-merge it; move it together with the python-app images. Matched by depName, because the mise manager's packageName for Python is python/cpython.",
       "matchManagers": [
         "mise"
       ],
-      "matchPackageNames": [
+      "matchDepNames": [
         "python"
       ],
       "matchUpdateTypes": [
