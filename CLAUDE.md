@@ -46,7 +46,7 @@ Consumers override the shared config by setting options locally after the `exten
 
 ## Tools
 
-`mise.toml` pins Python, pre-commit, shellcheck and Node (for `make validate`'s `npx renovate-config-validator`). `make install` runs `mise install`, then wires up the hooks; CI installs the same versions. A machine is set up once with jay-withers/toolchain. There is no dev container.
+`mise.toml` pins Python, pre-commit, shellcheck and Node (for `make validate`'s `npx renovate-config-validator`). `make install` runs `mise install`, then wires up the hooks; CI installs the same versions. `mise.lock` records each tool's download URL and checksum for every platform, and CI installs with `--locked` because it exists, so after editing `mise.toml` by hand run `mise lock` and commit both. Renovate refreshes it on its own updates. A machine is set up once with jay-withers/toolchain. There is no dev container.
 
 ## Commands
 
