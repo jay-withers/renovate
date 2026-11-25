@@ -16,7 +16,7 @@
       ]
     },
     {
-      "description": "A Python minor in mise.toml (3.14 -> 3.15) is a new interpreter, the same hazard docker.json holds back for the base image: CI's tests would move to it while the runtime image stays put, so a pass would say nothing about what ships. Raise it alone and never auto-merge it; move it together with the python-app images. Matched by depName, because the mise manager's packageName for Python is python/cpython.",
+      "description": "Never raise a Python minor or major in mise.toml on its own. mise.toml's Python is what local runs and CI test on, and it must stay the image's: workflows' docker.yml (v1.35.0+, an image's \"python\" field) fails container-build when they differ. CPython ships a minor long before dev-containers' python-app adopts it, so a mise PR would only ever fail that check, and grouping it with the python app base images would block their weekly security rebuilds behind it. Instead the python-app PR that moves the interpreter fails the check, naming both versions, and the fix is to bump mise.toml's python in that same PR, so the two always land together. Patches still update (the check compares major.minor). Matched by depName, because the mise manager's packageName for Python is python/cpython.",
       "matchManagers": [
         "mise"
       ],
@@ -27,8 +27,7 @@
         "minor",
         "major"
       ],
-      "groupName": "python interpreter (mise)",
-      "automerge": false
+      "enabled": false
     },
     {
       "description": "Hold checkov at 3.4.5, the last release that ships binaries. Every release since 3.4.6 (2026-11-19, checked up to 3.4.10 on 2026-11-25) has no assets, so mise lock refuses it ('failed to resolve checkov@3.4.6 for linux-x64; refusing to replace locked version(s) 3.4.5'), the grouped mise tools PR fails its artifact update, and every other tool in it is held back too. Lift this once a release ships checkov_linux_X86_64.zip again.",
