@@ -29,7 +29,7 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 | **terraform** | `github>jay-withers/renovate:terraform` | Groups Terraform/Terragrunt providers and modules, except a minor bump of a 0.x one, which gets its own PR (below 1.0 a minor may break the interface). |
 | **npm** | `github>jay-withers/renovate:npm` | Groups npm dev vs production dependencies and `@types`. |
 | **pre-commit** | `github>jay-withers/renovate:pre-commit` | Enables the pre-commit manager and groups all hook updates into one PR (they share `.pre-commit-config.yaml`). |
-| **mise** | `github>jay-withers/renovate:mise` | Enables the mise manager and groups every tool update in `mise.toml` (and its `mise.lock`) into one "mise tools" PR. A Python minor gets its own PR and is never auto-merged, like docker's base-image minors. checkov is held at 3.4.5, since later releases ship no binaries. |
+| **mise** | `github>jay-withers/renovate:mise` | Enables the mise manager and groups every tool update in `mise.toml` (and its `mise.lock`) into one "mise tools" PR. A Python minor or major is never raised on its own: it moves with the `python-app` image, whose PR fails workflows' Python check until `mise.toml` is bumped in it. checkov is held at 3.4.5, since later releases ship no binaries. |
 
 ### Picking individual presets
 
