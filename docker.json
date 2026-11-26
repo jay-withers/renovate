@@ -59,6 +59,20 @@
       "schedule": [
         "at any time"
       ]
+    },
+    {
+      "description": "dev-containers' dotnet-app and dotnet-app-builder are the same kind of pair: the builder is dotnet-app plus the SDK, so an app builds against the runtime it runs on, and both are published together at one version. Raise them in one PR, at any time, for the reason the python pair is: their releases are almost always security rebuilds (Ubuntu fixes via apt-get upgrade), which cd-patch-check dispatches mid-week when dotnet-app:latest has a fixable HIGH or CRITICAL OS finding, and each .NET app's container-build Trivy gate fails until the app takes the new digest. Listed last so this groupName wins over the generic digest and non-major groups above. Auto-merge stays on, so a dotnet-app release that moves the .NET runtime major (a hand-made dev-containers change, since Renovate never raises Microsoft's base major there) would reach every app as an ordinary bump; the guard for that belongs in the app's CI, comparing the image's runtime major with mise.toml's dotnet, as docker.yml does for Python.",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/jay-withers/dev-containers/dotnet-app",
+        "ghcr.io/jay-withers/dev-containers/dotnet-app-builder"
+      ],
+      "groupName": "dotnet app base images",
+      "schedule": [
+        "at any time"
+      ]
     }
   ]
 }
