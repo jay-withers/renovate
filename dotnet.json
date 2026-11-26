@@ -58,7 +58,7 @@
       ]
     },
     {
-      "description": "Never raise the SDK's major. A major is a new runtime: every project's TargetFramework (net11.0), the SDK and the runtime image (dev-containers' planned dotnet-app images, or Microsoft's below) change with it, by hand, in one PR. Feature bands and patches (11.0.100 to 11.0.101 or 11.0.200) keep the runtime major and still update.",
+      "description": "Never raise the SDK's major. A major is a new runtime: every project's TargetFramework (net11.0), the SDK and the runtime image (dev-containers' dotnet-app images, built on Microsoft's below) change with it, by hand, in one PR. Feature bands and patches (11.0.100 to 11.0.101 or 11.0.200) keep the runtime major and still update.",
       "matchDepNames": [
         "dotnet",
         "dotnet-sdk"
@@ -85,6 +85,19 @@
         "major"
       ],
       "enabled": false
+    },
+    {
+      "description": "Microsoft's aspnet and sdk images move in one PR. dev-containers' dotnet-app-builder copies the SDK image's /usr/share/dotnet onto dotnet-app (aspnet), and the SDK brings its own copy of the runtime: raised separately, the builder would carry two runtimes and its smoke test fails. Microsoft publishes both on the same day for each servicing release. Majors are held by the next rule, which comes after this one.",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "mcr.microsoft.com/dotnet/aspnet",
+        "mcr.microsoft.com/dotnet/sdk",
+        "mcr.microsoft.com/dotnet/runtime",
+        "mcr.microsoft.com/dotnet/runtime-deps"
+      ],
+      "groupName": "dotnet base images"
     },
     {
       "description": "Hold majors of Microsoft's .NET images (aspnet, runtime, sdk) for the same reason: a framework-dependent app built for net11.0 will not start on a 12.0 runtime, and container-build only builds the image, so the PR would pass and auto-merge.",
