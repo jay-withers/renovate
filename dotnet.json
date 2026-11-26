@@ -1,0 +1,127 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": ".NET: keep mise.toml's dotnet SDK pin (and its mise.lock entry) current, which the mise manager cannot do on its own, move it in the mise tools PR, leave SDK majors to people, and group non-major NuGet updates into one PR.",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "mise.toml's dotnet, the SDK that workflows' dotnet.yml and local runs build with. The mise manager extracts it but skips it (unsupported-datasource: no core:dotnet lookup), so without this it is never updated. Matches dotnet = \"11.0.100\" and dotnet = { version = \"11.0.100\" }, indented or with a quoted key.",
+      "managerFilePatterns": [
+        "/(^|/)\\.?mise\\.toml$/"
+      ],
+      "matchStrings": [
+        "(^|\\n)[ \\t]*\"?dotnet\"?[ \\t]*=[ \\t]*\"(?<currentValue>[0-9][^\"]*)\"",
+        "(^|\\n)[ \\t]*\"?dotnet\"?[ \\t]*=[ \\t]*\\{[^}\\n]*version[ \\t]*=[ \\t]*\"(?<currentValue>[0-9][^\"]*)\""
+      ],
+      "datasourceTemplate": "dotnet-version",
+      "packageNameTemplate": "dotnet-sdk",
+      "depNameTemplate": "dotnet"
+    },
+    {
+      "customType": "regex",
+      "description": "The dotnet entry in mise.lock, which must move with mise.toml: CI runs mise install --locked, which fails on a version the lock does not list. core:dotnet entries carry no checksums, so rewriting the version wherever it appears in the entry (version and specifiers; autoReplaceGlobalMatch) is the whole update. The match runs from [[tools.dotnet]]'s version line over every key = value line after it, in any order, so an extra key does not stop it matching.",
+      "managerFilePatterns": [
+        "/(^|/)\\.?mise\\.lock$/"
+      ],
+      "matchStrings": [
+        "\\[\\[tools\\.dotnet\\]\\]\\nversion = \"(?<currentValue>[0-9][^\"]*)\"(\\n[a-z_.]+ = [^\\n]*)*"
+      ],
+      "datasourceTemplate": "dotnet-version",
+      "packageNameTemplate": "dotnet-sdk",
+      "depNameTemplate": "dotnet"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "mise.toml's and mise.lock's dotnet move together, in the mise tools PR with every other mise tool, so the lock never lags the pin.",
+      "matchDepNames": [
+        "dotnet"
+      ],
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "groupName": "mise tools",
+      "addLabels": [
+        "mise"
+      ]
+    },
+    {
+      "description": "global.json's sdk.version, where a repository keeps one, moves with mise.toml's dotnet in the mise tools PR.",
+      "matchManagers": [
+        "nuget"
+      ],
+      "matchDepTypes": [
+        "dotnet-sdk"
+      ],
+      "groupName": "mise tools",
+      "addLabels": [
+        "mise"
+      ]
+    },
+    {
+      "description": "Never raise the SDK's major. A major is a new runtime: every project's TargetFramework (net11.0), the SDK and the runtime image (dev-containers' planned dotnet-app images, or Microsoft's below) change with it, by hand, in one PR. Feature bands and patches (11.0.100 to 11.0.101 or 11.0.200) keep the runtime major and still update.",
+      "matchDepNames": [
+        "dotnet",
+        "dotnet-sdk"
+      ],
+      "matchDatasources": [
+        "dotnet-version"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Hold majors of ASP.NET Core and EF Core packages, and of EF Core providers (Npgsql.EntityFrameworkCore.PostgreSQL and the like), with the SDK's. Each major targets only its own runtime (EF Core 11 needs net11.0), so the PR could never restore until the TargetFramework moves. Matched by name, not source URL: since .NET 10 they are built from the VMR and name github.com/dotnet/dotnet, which every runtime and Microsoft.Extensions package shares.",
+      "matchManagers": [
+        "nuget"
+      ],
+      "matchPackageNames": [
+        "Microsoft.AspNetCore.*",
+        "*.EntityFrameworkCore",
+        "*.EntityFrameworkCore.*"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Hold majors of Microsoft's .NET images (aspnet, runtime, sdk) for the same reason: a framework-dependent app built for net11.0 will not start on a 12.0 runtime, and container-build only builds the image, so the PR would pass and auto-merge.",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "mcr.microsoft.com/dotnet/**"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Add an ecosystem label so PRs can be triaged at a glance",
+      "matchManagers": [
+        "nuget"
+      ],
+      "addLabels": [
+        "dotnet"
+      ]
+    },
+    {
+      "description": "Group non-major NuGet updates into one PR per repo. Each one rewrites packages.lock.json, which lists the transitive graph, so separate PRs would conflict with each other. Majors stay separate, since a package major can change its API and deserves its own PR. Renovate regenerates the lock files with dotnet restore, on the SDK mise.toml pins (the mise manager shares it as the dotnet constraint), so no global.json sdk block is needed for that.",
+      "matchManagers": [
+        "nuget"
+      ],
+      "matchDepTypes": [
+        "nuget"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "groupName": "nuget packages"
+    }
+  ]
+}
