@@ -1,26 +1,102 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Node / npm: group dev and production dependencies separately.",
+  "description": "Node / npm: group dev and production dependencies separately, move the Dockerfile's node image minors with mise.toml's node, raise a Node major only by hand, and leave package.json's engines.node and packageManager to people.",
   "packageRules": [
     {
       "description": "Group non-major devDependencies",
-      "matchManagers": ["npm"],
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": [
+        "npm"
+      ],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "groupName": "npm dev dependencies (non-major)"
     },
     {
       "description": "Group non-major production dependencies",
-      "matchManagers": ["npm"],
-      "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": [
+        "npm"
+      ],
+      "matchDepTypes": [
+        "dependencies"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "groupName": "npm production dependencies (non-major)"
     },
     {
       "description": "Group @types packages together",
-      "matchManagers": ["npm"],
-      "matchPackageNames": ["@types/**"],
+      "matchManagers": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "@types/**"
+      ],
       "groupName": "npm type definitions"
+    },
+    {
+      "description": "Never touch package.json's engines.node or packageManager. engines.node is the package's minimum Node, raised by a person when the code needs a newer feature, like go.mod's go line; other engines entries (npm, vscode) still update. There should be no packageManager field: workflows' node.yml runs the npm bundled with mise.toml's node, so a pinned npm would only drift from it.",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchDepTypes": [
+        "engines"
+      ],
+      "matchDepNames": [
+        "node"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "See above: no packageManager field should exist, so never update one.",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchDepTypes": [
+        "packageManager"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "A minor or patch of the Dockerfile's node image moves in the mise tools PR, with mise.toml's node. mise.toml's node is what local runs and node.yml's suite test with, and the image is what ships; workflows' docker.yml (v1.36.0+, an image's \"node\" field) fails container-build when their majors differ, and keeping the versions together keeps them in the same major. The Node project publishes the official image within a day of a release, so unlike Python's base images they can land together. Digest updates are deliberately not included: they are the image's OS security rebuilds, which every app's Trivy gate needs promptly, and in the mise tools PR one failing tool (checkov 3.4.6, say) would hold them back. They stay in docker.json's digest group. Listed after docker.json in default.json's extends, so this groupName wins.",
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchDepNames": [
+        "node",
+        "docker.io/library/node"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "mise tools",
+      "addLabels": [
+        "mise"
+      ]
+    },
+    {
+      "description": "Never raise a Node major on its own: not mise.toml's node, the Dockerfile's node image or @types/node, which describes one Node major's APIs. Node's odd majors are never LTS and its even ones become LTS six months after release, so a major PR on release day would auto-merge onto a line that is not yet, or never will be, long-term supported. A person moves all three together, in one PR, once the new major is LTS. Minors and patches still update. Matched by depName, which is node for both the mise and dockerfile managers; other places a Node version is written (.nvmrc, docker-compose, setup-node) are not covered.",
+      "matchManagers": [
+        "mise",
+        "dockerfile",
+        "npm"
+      ],
+      "matchDepNames": [
+        "node",
+        "docker.io/library/node",
+        "@types/node"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
     }
   ]
 }
