@@ -21,7 +21,7 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 
 | Preset | Extend as | What it does |
 | --- | --- | --- |
-| **default** | `github>jay-withers/renovate` | The recommended everything-included config. Extends every preset below plus `config:recommended`, the dependency dashboard, semantic commits, sign-off and stale-PR rebasing. Commits are prefixed `chore(deps):`, PRs get a `dependencies` label plus an ecosystem one (`docker`, `github-actions`, `terraform`, `javascript`, `go`), and Renovate opens at most 4 an hour and 20 at once. |
+| **default** | `github>jay-withers/renovate` | The recommended everything-included config. Extends every preset below plus `config:recommended`, the dependency dashboard, semantic commits, sign-off and stale-PR rebasing. Commits are prefixed `chore(deps):`, PRs get a `dependencies` label plus an ecosystem one (`docker`, `github-actions`, `terraform`, `javascript`, `go`, `dotnet`), and Renovate opens at most 4 an hour and 20 at once. |
 | **automerge** | `github>jay-withers/renovate:automerge` | Auto-merges every update — including majors — once CI passes and the release is at least 3 days old (`minimumReleaseAge`; this account's own `jay-withers/*` releases and security fixes don't wait). |
 | **schedule** | `github>jay-withers/renovate:schedule` | Opens PRs on Mondays (all day, so the hosted app always gets a run in the window) to reduce mid-week churn (dev-containers' python app base images are the exception: docker.json opens those at any time, since they are security rebuilds), and keeps open PRs rebased onto the base branch the rest of the week so branch protection's up-to-date requirement cannot strand them. |
 | **docker** | `github>jay-withers/renovate:docker` | Pins image digests and groups Docker updates (digests together, non-major together). A Python base-image minor gets its own PR and is never auto-merged. dev-containers' `python-app` and `python-app-builder` images always move together in one PR, at any time of the week (they are usually security rebuilds). |
@@ -31,6 +31,7 @@ That single line pulls in [`default.json`](default.json), which wires up all the
 | **pre-commit** | `github>jay-withers/renovate:pre-commit` | Enables the pre-commit manager and groups all hook updates into one PR (they share `.pre-commit-config.yaml`). |
 | **mise** | `github>jay-withers/renovate:mise` | Enables the mise manager and groups every tool update in `mise.toml` (and its `mise.lock`) into one "mise tools" PR. A Python minor or major is never raised on its own: it moves with the `python-app` image, whose PR fails workflows' Python check until `mise.toml` is bumped in it. checkov is held at 3.4.5, since later releases ship no binaries. |
 | **go** | `github>jay-withers/renovate:go` | Go modules: runs `go mod tidy` after every update (and rewrites import paths on a module major), groups non-major module updates into one "go modules" PR, never touches go.mod's `go` or `toolchain` directive, and moves the Dockerfile's `golang` builder image in the "mise tools" PR with `mise.toml`'s `go`, so the binary is built with the Go that CI tested. Extended last in `default.json` so its group wins. |
+| **dotnet** | `github>jay-withers/renovate:dotnet` | .NET: keeps `mise.toml`'s `dotnet` SDK pin and its `mise.lock` entry current (the mise manager skips them) in the "mise tools" PR, never raises the SDK's major (a new runtime and `TargetFramework`, moved by hand), nor an ASP.NET Core, EF Core or Microsoft .NET image major with it, and groups non-major NuGet updates into one "nuget packages" PR. Renovate regenerates `packages.lock.json` on the SDK `mise.toml` pins. Extend it after `config:recommended`, whose `dotnet monorepo` group would otherwise claim the SDK. |
 
 ### Picking individual presets
 
@@ -125,6 +126,7 @@ npm.json               # Node / npm preset
 pre-commit.json        # pre-commit hooks preset
 mise.json              # mise tools preset
 go.json                # Go modules preset
+dotnet.json            # .NET SDK pin and NuGet preset
 renovate.json          # this repo dogfoods its own config
 .editorconfig          # baseline editor settings
 .gitattributes         # git-level LF normalization
