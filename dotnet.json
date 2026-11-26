@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": ".NET: keep mise.toml's dotnet SDK pin (and its mise.lock entry) current, which the mise manager cannot do on its own, move it in the mise tools PR, leave SDK majors to people, and group non-major NuGet updates into one PR.",
+  "description": ".NET: keep mise.toml's dotnet SDK pin (and its mise.lock entry) current, which the mise manager cannot do on its own, move it in the mise tools PR, move Microsoft's aspnet and sdk images together, leave SDK, ASP.NET Core, EF Core and Microsoft image majors to people, and group non-major NuGet updates into one PR.",
   "customManagers": [
     {
       "customType": "regex",
@@ -87,7 +87,7 @@
       "enabled": false
     },
     {
-      "description": "Microsoft's aspnet and sdk images move in one PR. dev-containers' dotnet-app-builder copies the SDK image's /usr/share/dotnet onto dotnet-app (aspnet), and the SDK brings its own copy of the runtime: raised separately, the builder would carry two runtimes and its smoke test fails. Microsoft publishes both on the same day for each servicing release. Majors are held by the next rule, which comes after this one.",
+      "description": "Microsoft's aspnet and sdk images move in one PR. dev-containers' dotnet-app-builder copies the SDK image's /usr/share/dotnet onto dotnet-app (aspnet), and the SDK brings its own copy of the runtime: raised separately, the builder would carry two runtimes and its smoke test fails. Microsoft publishes both on the same day for each servicing release. Majors are held by the next rule, which comes after this one. A group does not wait for its slowest member, so if one image clears the 3-day minimumReleaseAge first the PR can open with it alone; the builder's smoke test then fails until the other joins the PR on a later run.",
       "matchDatasources": [
         "docker"
       ],
