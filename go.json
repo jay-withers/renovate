@@ -1,0 +1,59 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Go modules: tidy go.mod and go.sum after every update, keep the Dockerfile's golang builder in step with mise.toml's go, and leave go.mod's go and toolchain directives to people.",
+  "postUpdateOptions": [
+    "gomodTidy",
+    "gomodUpdateImportPaths"
+  ],
+  "packageRules": [
+    {
+      "description": "Add an ecosystem label so PRs can be triaged at a glance",
+      "matchManagers": [
+        "gomod"
+      ],
+      "addLabels": [
+        "go"
+      ]
+    },
+    {
+      "description": "Group Go module updates into one PR per repo (they all edit go.mod and go.sum, so separate PRs would conflict). Majors stay separate: a module major changes its import path, and gomodUpdateImportPaths rewrites the code, which deserves its own PR.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "require"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "groupName": "go modules"
+    },
+    {
+      "description": "Never touch go.mod's go or toolchain directive. The go directive is the module's minimum language version, raised by a person when the code needs a newer feature. The toolchain directive should not exist: workflows' go.yml sets GOTOOLCHAIN=local, so the Go that builds is mise.toml's, and a toolchain line newer than it fails the build.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "golang",
+        "toolchain"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "The Dockerfile's golang builder image moves in the mise tools PR, with mise.toml's go. mise.toml's go is what local runs and CI test with, and the builder compiles the shipped binary, so the two must be the same release. Go publishes the image the day it tags the release, so unlike Python's base images they can always land together. Listed after docker.json's digest and non-major groups, so this groupName wins.",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchDepNames": [
+        "golang",
+        "docker.io/library/golang"
+      ],
+      "groupName": "mise tools",
+      "addLabels": [
+        "mise"
+      ]
+    }
+  ]
+}
