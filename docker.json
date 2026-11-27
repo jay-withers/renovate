@@ -73,6 +73,20 @@
       "schedule": [
         "at any time"
       ]
+    },
+    {
+      "description": "dev-containers' node-app and node-app-builder are the same kind of pair: the builder is node-app plus that Node release's npm, so an app installs its node_modules on the Node and OS it runs on, and both are published together at one version. Raise them in one PR, at any time, for the reason the python and dotnet pairs are: their releases are almost always security rebuilds (Debian fixes via apt-get upgrade), which cd-patch-check dispatches mid-week when node-app:latest has a fixable HIGH or CRITICAL OS finding, and each Node app's container-build Trivy gate fails until the app takes the new digest. Matched by package name, so an app that only copies the node binary out of node-app (security-testing, on the ZAP image) is grouped the same way. Listed last so this groupName wins over the generic digest and non-major groups above. Auto-merge stays on: a node-app release that moves Node's major (a hand-made dev-containers change, since Renovate never raises the official node image's major there) is caught by the app's container-build, where workflows' docker.yml (v1.36.0+, an image's \"node\" field) compares the image's Node major with mise.toml's.",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/jay-withers/dev-containers/node-app",
+        "ghcr.io/jay-withers/dev-containers/node-app-builder"
+      ],
+      "groupName": "node app base images",
+      "schedule": [
+        "at any time"
+      ]
     }
   ]
 }
