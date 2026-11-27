@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Go modules: tidy go.mod and go.sum after every update, keep the Dockerfile's golang builder in step with mise.toml's go, and leave go.mod's go and toolchain directives to people.",
+  "description": "Go modules, indirect ones included: tidy go.mod and go.sum after every update, keep the Dockerfile's golang builder in step with mise.toml's go, and leave go.mod's go and toolchain directives to people.",
   "postUpdateOptions": [
     "gomodTidy",
     "gomodUpdateImportPaths"
@@ -16,12 +16,23 @@
       ]
     },
     {
-      "description": "Group Go module updates into one PR per repo (they all edit go.mod and go.sum, so separate PRs would conflict). Majors stay separate: a module major changes its import path, and gomodUpdateImportPaths rewrites the code, which deserves its own PR.",
+      "description": "Update `// indirect` modules too. Renovate's gomod manager switches them off by default, but they are compiled into the binary like any other module: repo-agent's first Go image failed Trivy on two HIGH CVEs in golang.org/x/net, pulled in by the Azure SDK, which no Renovate PR would ever have raised. go mod tidy (gomodTidy) keeps the graph consistent after the bump.",
       "matchManagers": [
         "gomod"
       ],
       "matchDepTypes": [
-        "require"
+        "indirect"
+      ],
+      "enabled": true
+    },
+    {
+      "description": "Group Go module updates, direct and indirect, into one PR per repo (they all edit go.mod and go.sum, so separate PRs would conflict). Majors stay separate: a module major changes its import path, and gomodUpdateImportPaths rewrites the code, which deserves its own PR.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "require",
+        "indirect"
       ],
       "matchUpdateTypes": [
         "minor",
